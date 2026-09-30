@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:iti_movie_app/views/profile/profile_page.dart';
 import 'package:iti_movie_app/views/search/search_page.dart';
 
 import '../../controllers/movies/movies_cubit.dart';
@@ -16,7 +17,7 @@ class HomePage extends StatelessWidget {
       create: (_) => MoviesCubit(TmdbService())..getPopularMovies(),
 
       child: Scaffold(
-        appBar: AppBar(
+      appBar: AppBar(
   title: const Text('Movie App'),
   actions: [
     IconButton(
@@ -30,9 +31,20 @@ class HomePage extends StatelessWidget {
       },
       icon: const Icon(Icons.search),
     ),
+
+    IconButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const ProfilePage(),
+          ),
+        );
+      },
+      icon: const Icon(Icons.person),
+    ),
   ],
 ),
-
         body: BlocBuilder<MoviesCubit, MoviesState>(
           builder: (context, state) {
             if (state is MoviesLoading) {

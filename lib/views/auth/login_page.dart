@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:iti_movie_app/views/home/home_page.dart';
 
 import '../../controllers/auth/auth_cubit.dart';
 import 'register_page.dart';
@@ -50,12 +51,13 @@ class _LoginPageState extends State<LoginPage> {
       body: BlocListener<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state is AuthSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Login successful'),
-              ),
-            );
-          }
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(
+      builder: (_) => const HomePage(),
+    ),
+  );
+}
 
           if (state is AuthError) {
             ScaffoldMessenger.of(context).showSnackBar(
