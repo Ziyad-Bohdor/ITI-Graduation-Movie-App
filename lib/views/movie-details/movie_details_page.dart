@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:iti_movie_app/controllers/movie-lists/movie_lists_cubit.dart';
+import 'package:iti_movie_app/services/firestore_service.dart';
 
 import '../../controllers/movies/movie_details_cubit.dart';
 import '../../controllers/movies/movie_details_state.dart';
@@ -15,14 +18,24 @@ class MovieDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => MovieDetailsCubit(
-        TmdbService(),
-      )..getMovieDetails(movieId),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => MovieDetailsCubit(
+            TmdbService(),
+          )..getMovieDetails(movieId),
+        ),
+        BlocProvider(
+          create: (_) => MovieListsCubit(
+            FirestoreService(),
+          ),
+        ),
+      ],
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Movie Details'),
         ),
+
         body: BlocBuilder<MovieDetailsCubit, MovieDetailsState>(
           builder: (context, state) {
             if (state is MovieDetailsLoading) {
@@ -77,6 +90,7 @@ class MovieDetailsPage extends StatelessWidget {
                                 color: Colors.amber,
                               ),
                               const SizedBox(width: 5),
+
                               Text(
                                 movie.voteAverage.toStringAsFixed(1),
                               ),
@@ -119,6 +133,128 @@ class MovieDetailsPage extends StatelessWidget {
                             style: const TextStyle(
                               fontSize: 16,
                               height: 1.5,
+                            ),
+                          ),
+
+                          const SizedBox(height: 24),
+
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton.icon(
+                              onPressed: () async {
+                                final user =
+                                    FirebaseAuth.instance.currentUser;
+
+                                if (user == null) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        'Please login first',
+                                      ),
+                                    ),
+                                  );
+                                  return;
+                                }
+
+                                final selectedList =
+                                    await showModalBottomSheet<String>(
+                                  context: context,
+                                  builder: (context) {
+                                    return SafeArea(
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          ListTile(
+                                            leading: const Icon(
+                                              Icons.favorite,
+                                            ),
+                                            title: const Text(
+                                              'Favorites',
+                                            ),
+                                            onTap: () {
+                                              Navigator.pop(
+                                                context,
+                                                'favorites',
+                                              );
+                                            },
+                                          ),
+
+                                          ListTile(
+                                            leading: const Icon(
+                                              Icons.visibility,
+                                            ),
+                                            title: const Text(
+                                              'Watched',
+                                            ),
+                                            onTap: () {
+                                              Navigator.pop(
+                                                context,
+                                                'watched',
+                                              );
+                                            },
+                                          ),
+
+                                          ListTile(
+                                            leading: const Icon(
+                                              Icons.play_circle,
+                                            ),
+                                            title: const Text(
+                                              'Watching',
+                                            ),
+                                            onTap: () {
+                                              Navigator.pop(
+                                                context,
+                                                'watching',
+                                              );
+                                            },
+                                          ),
+
+                                          ListTile(
+                                            leading: const Icon(
+                                              Icons.bookmark,
+                                            ),
+                                            title: const Text(
+                                              'Want to Watch',
+                                            ),
+                                            onTap: () {
+                                              Navigator.pop(
+                                                context,
+                                                'want_to_watch',
+                                              );
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                );
+
+                                if (selectedList == null) return;
+
+                                final error = await context
+                                    .read<MovieListsCubit>()
+                                    .addMovie(
+                                      uid: user.uid,
+                                      listType: selectedList,
+                                      movie: movie,
+                                    );
+
+                                if (!context.mounted) return;
+
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      error == null
+                                          ? 'Movie added successfully'
+                                          : error,
+                                    ),
+                                  ),
+                                );
+                              },
+                              icon: const Icon(Icons.add),
+                              label: const Text(
+                                'Add to My List',
+                              ),
                             ),
                           ),
                         ],

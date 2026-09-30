@@ -10,20 +10,26 @@ class MoviesCubit extends Cubit<MoviesState> {
   MoviesCubit(this.tmdbService) : super(MoviesInitial());
 
   Future<void> getPopularMovies() async {
-    emit(MoviesLoading());
+  emit(MoviesLoading());
 
-    try {
-      final response = await tmdbService.getPopularMovies();
+  try {
+    final response = await tmdbService.getPopularMovies();
 
-      final List moviesJson = response.data['results'];
+    if (isClosed) return;
 
-      final movies = moviesJson
-          .map((movie) => MovieModel.fromJson(movie))
-          .toList();
+    final List moviesJson = response.data['results'];
 
-      emit(MoviesSuccess(movies));
-    } catch (e) {
-      emit(MoviesError(e.toString()));
-    }
+    final movies = moviesJson
+        .map((movie) => MovieModel.fromJson(movie))
+        .toList();
+
+    if (isClosed) return;
+
+    emit(MoviesSuccess(movies));
+  } catch (e) {
+    if (isClosed) return;
+
+    emit(MoviesError(e.toString()));
   }
 }
+  }
