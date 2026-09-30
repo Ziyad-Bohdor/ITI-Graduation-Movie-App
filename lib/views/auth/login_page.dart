@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iti_movie_app/views/home/home_page.dart';
+import 'package:iti_movie_app/views/navigation/main_navigation_page.dart';
 
 import '../../controllers/auth/auth_cubit.dart';
 import 'register_page.dart';
@@ -54,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
   Navigator.pushReplacement(
     context,
     MaterialPageRoute(
-      builder: (_) => const HomePage(),
+      builder: (_) => const MainNavigationPage(),
     ),
   );
 }

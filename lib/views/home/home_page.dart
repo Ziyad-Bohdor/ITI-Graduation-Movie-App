@@ -120,18 +120,7 @@ class HomePage extends StatelessWidget {
               },
               icon: const Icon(Icons.search),
             ),
-
-            IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const ProfilePage(),
-                  ),
-                );
-              },
-              icon: const Icon(Icons.person),
-            ),
+            
           ],
         ),
 

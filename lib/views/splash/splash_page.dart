@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:iti_movie_app/views/navigation/main_navigation_page.dart';
 
 import '../auth/login_page.dart';
-import '../home/home_page.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -32,7 +32,7 @@ class _SplashPageState extends State<SplashPage> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (_) => const HomePage(),
+              builder: (_) => const MainNavigationPage(),
             ),
           );
         } else {
