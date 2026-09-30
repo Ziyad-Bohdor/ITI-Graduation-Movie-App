@@ -18,4 +18,16 @@ class TmdbService {
 
     return response;
   }
+
+  Future<Response> getMovieDetails(int movieId) async {
+  final response = await dio.get(
+    'https://api.themoviedb.org/3/movie/$movieId',
+    queryParameters: {
+      'api_key': apiKey,
+      'language': 'en-US',
+    },
+  );
+
+  return response;
+}
 }
