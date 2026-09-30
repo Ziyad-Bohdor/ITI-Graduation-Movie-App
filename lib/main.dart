@@ -1,10 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:iti_movie_app/services/tmdb_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await dotenv.load(fileName: ".env");
+
+   final tmdbService = TmdbService();
+
+  try {
+    final response = await tmdbService.getPopularMovies();
+
+    print(response.data);
+  } catch (e) {
+    print('TMDB ERROR: $e');
+  }
 
   runApp(const MyApp());
 }
