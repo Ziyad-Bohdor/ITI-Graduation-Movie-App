@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:iti_movie_app/views/search/search_page.dart';
 
 import '../../controllers/movies/movies_cubit.dart';
 import '../../controllers/movies/movies_state.dart';
@@ -16,8 +17,21 @@ class HomePage extends StatelessWidget {
 
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Movie App'),
-        ),
+  title: const Text('Movie App'),
+  actions: [
+    IconButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => SearchPage(),
+          ),
+        );
+      },
+      icon: const Icon(Icons.search),
+    ),
+  ],
+),
 
         body: BlocBuilder<MoviesCubit, MoviesState>(
           builder: (context, state) {

@@ -30,4 +30,17 @@ class TmdbService {
 
   return response;
 }
+
+Future<Response> searchMovies(String query) async {
+  final response = await dio.get(
+    'https://api.themoviedb.org/3/search/movie',
+    queryParameters: {
+      'api_key': apiKey,
+      'language': 'en-US',
+      'query': query,
+    },
+  );
+
+  return response;
+}
 }
